@@ -5,6 +5,13 @@ const bcrypt = require('bcryptjs');
 exports.register = async (req, res) => {
     try {
         const { name, email, password, mobileNumber, role } = req.body;         
+
+        // Prevent duplicate email registration
+        const existing = await User.findOne({ email });
+        if (existing) {
+            return res.status(409).json({ message: 'Email already in use' });
+        }
+
         const hpass = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
@@ -23,6 +30,8 @@ exports.register = async (req, res) => {
         return res.status(500).json({ message: "Server error" });
     }
 };
+
+
 
 exports.login = async (req, res) => {
     try {
@@ -58,8 +67,10 @@ exports.login = async (req, res) => {
             token
         });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ 
-            message: 'Server error' 
+            message: 'Server error',
+            error: error.message
         });
     }
 };

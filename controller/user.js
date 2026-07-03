@@ -21,9 +21,10 @@ exports.createUser = async (req, res) => {
             data: newUser,
         });
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         return res.status(500).json({   
             message: "Server error",
+            error: err.message
         });
     }
 };
@@ -38,9 +39,10 @@ exports.getAllUsers = async (req,res) => {
             data: users,
         });
     }catch(error){
-        console.error(error.message);
+        console.error(error);
         return res.status(500).json({
             message: "Server error",
+            error: error.message
         });
     }
 };
@@ -61,8 +63,10 @@ exports.getMe = async (req, res) => {
             data: currentUser,
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Server error",
+            error: error.message
         });
     }
 };
@@ -120,8 +124,10 @@ exports.updateUser = async (req, res) => {
             data: updatedUser,
         });
     } catch (err) {
+        console.error(err);
         return res.status(500).json({
             message: "Server error",
+            error: err.message
         });
     }
 };

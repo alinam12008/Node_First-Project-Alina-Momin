@@ -4,6 +4,7 @@ const userController = require('../controller/user');
 const { createUserValidator } = require('../validators/user');
 const authMiddleware = require('../middleware/authMiddleware');
 const { requireAdmin, allowSelfOrAdmin } = require('../middleware/roleMiddleware');
+const { hasPermission } = require('../middleware/permissionMiddleware');
 const validateInput = require('../validators/validateInput');
 
 router.post(
@@ -15,7 +16,7 @@ router.post(
   userController.createUser
 );
 
-router.get('/me', authMiddleware, userController.getMe);
+router.get('/me', authMiddleware, hasPermission('view_own_user'), userController.getMe);
 
 router.get('/:id', authMiddleware, allowSelfOrAdmin, userController.getUserById);
 

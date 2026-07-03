@@ -1,8 +1,15 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 exports.createUser = async (req, res) => {
     try {
         const { name, email, password, mobileNumber, role } = req.body;
+
+        // Prevent duplicate email
+        const existing = await User.findOne({ email });
+        if (existing) {
+            return res.status(409).json({ message: 'Email already in use' });
+        }
 
         const hpass = await bcrypt.hash(password, 10);
 
@@ -19,7 +26,8 @@ exports.createUser = async (req, res) => {
             data: newUser,
         });
     } catch (error) {
-        return res.status(500).json({ message: "Server error" });
+        console.error(error);
+        return res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -31,7 +39,8 @@ exports.getAllUsers = async (req, res) => {
             data: users,
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Server error' });
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
@@ -43,7 +52,8 @@ exports.getUserById = async (req, res) => {
         }
         return res.status(200).json({ message: 'User fetched successfully', data: userData });
     } catch (error) {
-        return res.status(500).json({ message: 'Server error' });
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
@@ -66,7 +76,8 @@ exports.updateUser = async (req, res) => {
 
         return res.status(200).json({ message: 'User updated successfully', data: updatedUser });
     } catch (error) {
-        return res.status(500).json({ message: 'Server error' });
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
