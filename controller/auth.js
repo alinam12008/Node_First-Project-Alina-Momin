@@ -2,6 +2,28 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
+exports.register = async (req, res) => {
+    try {
+        const { name, email, password, mobileNumber, role } = req.body;         
+        const hpass = await bcrypt.hash(password, 10);
+
+        const newUser = await User.create({
+            name,
+            email,
+            password: hpass,
+            mobileNumber,
+            role,
+        });
+
+        return res.status(201).json({
+            message: "User created",
+            data: newUser,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
